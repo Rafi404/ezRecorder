@@ -1,13 +1,16 @@
 <component name="libraryTable">
   <library name="Flutter Plugins" type="FlutterPluginsLibraryType">
     <CLASSES>
+      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/microphone-0.1.0" />
+      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/microphone_web-0.1.0" />
+      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/just_audio-0.9.19" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_linux-2.1.5" />
-      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound_web-9.1.2" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.8" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.5" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.5" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_android-2.0.11" />
-      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sound-9.1.2" />
+      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/just_audio_web-0.4.4" />
+      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/audio_session-0.1.6+1" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
