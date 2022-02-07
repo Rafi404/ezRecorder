@@ -1,3 +1,4 @@
+import 'package:ezrecorder/Widgets/recorder.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,10 +33,16 @@ class _HomePageState extends State<HomePage> {
         ],
 
       ),
-      body: ListView(
-        children: const [
-          Text('Recorder')
-        ],
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.only(top: 50),
+          child: ListView(
+            children: const [
+              AudioRecorder(),
+
+            ],
+          ),
+        ),
       ),
 
     );
