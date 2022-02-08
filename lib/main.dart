@@ -1,7 +1,6 @@
 import 'package:ezrecorder/provider/recorderProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'Pages/homePage.dart';
 
 void main() {
@@ -10,7 +9,6 @@ void main() {
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
-
   @override
   _MyAppState createState() => _MyAppState();
 }

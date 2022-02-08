@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:microphone/microphone.dart';
 import 'package:provider/provider.dart';
+import 'dart:html';
 
 enum AudioState { play, recording, pause, resume, stop }
 
@@ -26,35 +27,35 @@ class _AudioRecorderState extends State<AudioRecorder> {
     // recorder.init();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
-  void handleAudioState(AudioState state) {
-    setState(() {
-      if (audioState == null) {
-        ///Start Recording
-        audioState = AudioState.play;
-
-        ///Finished Recording
-      } else if (audioState == AudioState.recording) {
-        audioState = AudioState.play;
-
-        ///Pause recording audio
-      } else if (audioState == AudioState.pause) {
-        audioState = AudioState.resume;
-
-        ///Resume recording audio
-      } else if (audioState == AudioState.resume) {
-        audioState = AudioState.recording;
-
-        ///Stop recording audio
-      } else if (audioState == AudioState.stop) {
-        audioState = AudioState.play;
-      }
-    });
-  }
+  // void handleAudioState(AudioState state) {
+  //   setState(() {
+  //     if (audioState == null) {
+  //       ///Start Recording
+  //       audioState = AudioState.play;
+  //
+  //       ///Finished Recording
+  //     } else if (audioState == AudioState.recording) {
+  //       audioState = AudioState.play;
+  //
+  //       ///Pause recording audio
+  //     } else if (audioState == AudioState.pause) {
+  //       audioState = AudioState.resume;
+  //
+  //       ///Resume recording audio
+  //     } else if (audioState == AudioState.resume) {
+  //       audioState = AudioState.recording;
+  //
+  //       ///Stop recording audio
+  //     } else if (audioState == AudioState.stop) {
+  //       audioState = AudioState.play;
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +92,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                       onPressed: () {
                         Provider.of<RecordProvider>(context, listen: false)
                             .onPauseRecord();
+                        print('Recording is paused');
                       },
                       icon: const Icon(Icons.pause),
                       label: const Text('Pause Recording'),
@@ -149,34 +151,111 @@ class _AudioRecorderState extends State<AudioRecorder> {
                           ),
                           content: Container(
                             height: 200,
-                            width: 400,
+                            width: 500,
                             decoration: const BoxDecoration(
                               borderRadius:
                                   BorderRadius.all(Radius.circular(10)),
                             ),
                             child: ListView(
                               children: [
-                                ///Audio Play Button
-                                ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                      minimumSize: const Size(175, 50),
-                                      primary: Colors.greenAccent,
-                                      onPrimary: Colors.white),
-                                  onPressed: () {
-                                    print('Your record is playing');
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    ///Audio Pause Button
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        // minimumSize: const Size(175, 50),
+                                        primary: Colors.greenAccent,
+                                        onPrimary: Colors.white,
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.only(
+                                            left: 28,
+                                            right: 20,
+                                            top: 20,
+                                            bottom: 20),
+                                      ),
+                                      onPressed: () {
+                                        print('Your record is paused');
 
-                                    ///Play Recorded Audio
-                                    _audioPlayer = AudioPlayer();
-                                    // _audioPlayer?.setUrl != null?(_recorder?.value.recording?.url):"";
-                                    _audioPlayer!
-                                        .setUrl(_recorder!.value.recording!.url)
-                                        .then((_) {
-                                      return _audioPlayer?.play();
-                                    });
-                                  },
-                                  icon: const Icon(Icons.play_arrow),
-                                  label: const Text('Play'),
+                                        ///Pause Recorded Audio
+                                        _audioPlayer?.pause();
+                                      },
+                                      icon: const Icon(Icons.pause),
+                                      label: const Text(''),
+                                    ),
+
+                                    ///Audio Play Button
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        // minimumSize: const Size(175, 50),
+                                        primary: Colors.greenAccent,
+                                        onPrimary: Colors.white,
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.only(
+                                            left: 32,
+                                            right: 24,
+                                            top: 24,
+                                            bottom: 24),
+                                      ),
+                                      onPressed: () {
+                                        print('Your record is playing');
+
+                                        ///Play Recorded Audio
+                                        _audioPlayer = AudioPlayer();
+                                        // _audioPlayer?.setUrl != null?(_recorder?.value.recording?.url):"";
+                                        _audioPlayer!
+                                            .setUrl(
+                                                _recorder!.value.recording!.url)
+                                            .then((_) {
+                                          return _audioPlayer?.play();
+                                        });
+                                      },
+                                      icon: const Icon(Icons.play_arrow),
+                                      label: const Text(''),
+                                    ),
+
+                                    ///Audio Stop Button
+                                    ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        // minimumSize: const Size(175, 50),
+                                        primary: Colors.greenAccent,
+                                        onPrimary: Colors.white,
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.only(
+                                            left: 28,
+                                            right: 20,
+                                            top: 20,
+                                            bottom: 20),
+                                      ),
+                                      onPressed: () {
+                                        print('Your record is stopped');
+
+                                        ///Stop Recording Audio
+                                        _audioPlayer?.stop();
+                                      },
+                                      icon: const Icon(Icons.stop),
+                                      label: const Text(''),
+                                    ),
+                                  ],
                                 ),
+
+                                const SizedBox(
+                                  height: 90,
+                                ),
+
+                                ///Save to drive button
+                                ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                        minimumSize: const Size(175, 50),
+                                        primary: Colors.greenAccent,
+                                        onPrimary: Colors.white),
+                                    onPressed: () {
+                                      ///File Saving to Drive
+                                    },
+                                    icon: const Icon(Icons.backup),
+                                    label: const Text('Save to Drive'))
                               ],
                             ),
                           ),

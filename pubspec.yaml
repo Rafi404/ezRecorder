@@ -38,6 +38,7 @@ dependencies:
   microphone: ^0.1.0
   just_audio: ^0.9.19
   just_audio_web: ^0.4.4
+  universal_html: ^2.0.8
 
 
 dev_dependencies:
