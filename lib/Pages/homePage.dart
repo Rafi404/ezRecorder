@@ -1,11 +1,14 @@
 import 'package:ezrecorder/Widgets/recorder.dart';
-import 'package:flutter/foundation.dart';
+import 'package:ezrecorder/Widgets/soundWave.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:universal_html/html.dart' as html;
-import 'package:universal_html/html.dart';
-import 'package:universal_html/js.dart' as js;
-import 'package:universal_html/js_util.dart' as js;
+import 'package:provider/provider.dart';
+import '../provider/recorderProvider.dart';
+
+Widget smGutter() {
+  return const SizedBox(
+    height: 30,
+  );
+}
 
 class HomePage extends StatefulWidget {
   const HomePage();
@@ -41,8 +44,23 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: const EdgeInsets.only(top: 50),
           child: ListView(
-            children: const [
-              AudioRecorder(),
+            children: [
+              const Text(
+                "ezRecord. A Simple Audio Recorder",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: 45,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              ),
+              smGutter(),
+              smGutter(),
+              const AudioRecorder(),
+              smGutter(),
+              smGutter(),
+              Provider.of<RecordProvider>(context).waveStatus
+                  ? const SoundWave()
+                  : Container(),
             ],
           ),
         ),

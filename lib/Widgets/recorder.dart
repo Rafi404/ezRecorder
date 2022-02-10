@@ -1,9 +1,21 @@
+import 'dart:html';
+
 import 'package:ezrecorder/provider/recorderProvider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:microphone/microphone.dart';
 import 'package:provider/provider.dart';
-import 'dart:html';
+import 'package:googleapis/drive/v3.dart' as ga;
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+import 'dart:html' as html;
+
+const _clientId =
+    "1043182525029-6raml9bjivjpd4skfhlpnk9l39kj30qg.apps.googleusercontent.com";
+const _clientSecret = "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";
+const _scopes = [ga.DriveApi.driveFileScope];
 
 enum AudioState { play, recording, pause, resume, stop }
 
@@ -19,6 +31,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
   AudioState? audioState;
   MicrophoneRecorder? _recorder;
   AudioPlayer? _audioPlayer;
+  // GoogleDrive? driver;
 
   @override
   void initState() {
@@ -75,6 +88,11 @@ class _AudioRecorderState extends State<AudioRecorder> {
                     Provider.of<RecordProvider>(context, listen: false)
                         .onStartRecord();
                     _recorder?.start();
+
+                    //Call Timer
+                    Provider.of<RecordProvider>(context, listen: false)
+                        .waveStatus = true;
+
                     print('Recording is started');
                   },
                   icon: const Icon(Icons.mic),
@@ -92,6 +110,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                       onPressed: () {
                         Provider.of<RecordProvider>(context, listen: false)
                             .onPauseRecord();
+
                         print('Recording is paused');
                       },
                       icon: const Icon(Icons.pause),
@@ -130,14 +149,17 @@ class _AudioRecorderState extends State<AudioRecorder> {
                 Provider.of<RecordProvider>(context, listen: false)
                     .onStopRecord();
                 _recorder?.stop();
+                Provider.of<RecordProvider>(context, listen: false).waveStatus =
+                    false;
+
                 print('Recording is stopped');
 
                 showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
                           elevation: 24.0,
-                          // backgroundColor: HexColor('#ffffff').withOpacity(0.8),
-                          backgroundColor: Colors.teal.withOpacity(0.8),
+                      // backgroundColor: Colors.teal.withOpacity(0.8),
+                      backgroundColor: Colors.teal,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30)),
 
@@ -168,7 +190,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                                       style: ElevatedButton.styleFrom(
                                         // minimumSize: const Size(175, 50),
                                         primary: Colors.greenAccent,
-                                        onPrimary: Colors.white,
+                                        onPrimary: Colors.teal,
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.only(
                                             left: 28,
@@ -191,7 +213,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                                       style: ElevatedButton.styleFrom(
                                         // minimumSize: const Size(175, 50),
                                         primary: Colors.greenAccent,
-                                        onPrimary: Colors.white,
+                                        onPrimary: Colors.teal,
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.only(
                                             left: 32,
@@ -221,7 +243,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                                       style: ElevatedButton.styleFrom(
                                         // minimumSize: const Size(175, 50),
                                         primary: Colors.greenAccent,
-                                        onPrimary: Colors.white,
+                                        onPrimary: Colors.teal,
                                         shape: const CircleBorder(),
                                         padding: const EdgeInsets.only(
                                             left: 28,
@@ -242,7 +264,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                                 ),
 
                                 const SizedBox(
-                                  height: 90,
+                                  height: 40,
                                 ),
 
                                 ///Save to drive button
@@ -251,11 +273,64 @@ class _AudioRecorderState extends State<AudioRecorder> {
                                         minimumSize: const Size(175, 50),
                                         primary: Colors.greenAccent,
                                         onPrimary: Colors.white),
-                                    onPressed: () {
+                                    onPressed: () async {
                                       ///File Saving to Drive
+
+                                      final bytes = await _recorder?.toBytes();
+                                      var audioLength = bytes?.length;
+                                      print(audioLength);
+
+                                      // final File fileToUpload =
+                                      //     bytes as File;
+                                      // print(fileToUpload);
+
+                                      // getHttpClient();
+                                      upload(bytes, audioLength);
+
+                                      //
+                                      // final fileToUpload =
+                                      // _recorder!.value.recording;
+                                      // print(fileToUpload);
                                     },
                                     icon: const Icon(Icons.backup),
-                                    label: const Text('Save to Drive'))
+                                    label: const Text('Save to Drive')),
+
+                                const SizedBox(
+                                  height: 20,
+                                ),
+
+                                ///Download button
+                                ElevatedButton.icon(
+                                    style: ElevatedButton.styleFrom(
+                                        minimumSize: const Size(175, 50),
+                                        primary: Colors.greenAccent,
+                                        onPrimary: Colors.white),
+                                    onPressed: () async {
+                                      ///File Download
+
+                                      final bytes = await _recorder?.toBytes();
+                                      var audioLength = bytes?.length;
+                                      print(audioLength);
+
+                                      var url = Url.createObjectUrlFromBlob(Blob([bytes]));
+                                      AnchorElement(href: url)
+                                        ..setAttribute('download', '<Audio.mp3>')
+                                        ..click();
+
+
+                                    // var url=" _recorder!.value.recording!.url";
+                                    //   html.AnchorElement anchorElement =
+                                    //   html.AnchorElement(href:url);
+                                    //   anchorElement.download =
+                                    //    url;
+                                    //   anchorElement.click();
+
+
+                                    },
+                                    icon: const Icon(Icons.download),
+                                    label: const Text('Download')),
+
+
                               ],
                             ),
                           ),
@@ -286,31 +361,29 @@ class _AudioRecorderState extends State<AudioRecorder> {
       ),
     );
   }
-}
 
-// const pathToSaveAudio = 'Sample_audio.aac';
-// class SoundRecorder {
-//   FlutterSoundRecorder? _audioRecorder;
-//
-//   Future init() async{
-//     _audioRecorder = FlutterSoundRecorder();
-//     final status = await Permission.mi
-//     await _audioRecorder?.openAudioSession();
-//   }
-//
-//   Future _record() async {
-//     await _audioRecorder!.startRecorder(toFile: pathToSaveAudio);
-//   }
-//
-//   Future _pause() async {
-//     await _audioRecorder!.pauseRecorder();
-//   }
-//
-//   Future _resume() async {
-//     await _audioRecorder!.resumeRecorder();
-//   }
-//
-//   Future _stop() async {
-//     await _audioRecorder!.stopRecorder();
-//   }
-// }
+  //Get Authenticated Http Client
+  Future<http.Client> getHttpClient() async {
+    print('eeeee');
+    var authClient = await clientViaUserConsent(
+        ClientId(_clientId, _clientSecret), _scopes, (url) {
+      //open an external Browser
+      launch(url);
+    });
+    return authClient;
+  }
+
+  Future upload(file, length) async {
+    print("eeeeee");
+    final Stream<List> mediaStream =
+        Future.value([file]).asStream().asBroadcastStream();
+    var client = await getHttpClient();
+    print(client);
+    var drive = ga.DriveApi(client);
+    var driveFile = ga.File();
+    driveFile.name = "MyAudio.txt";
+    var response = await drive.files
+        .create(driveFile, uploadMedia: ga.Media(file, length));
+    print(response.toJson());
+  }
+}

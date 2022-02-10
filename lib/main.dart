@@ -17,8 +17,10 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     print('Recorder Build');
-    return ChangeNotifierProvider(
-      create: (context) => RecordProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context)=> RecordProvider(),),
+      ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'ezRecorder',
