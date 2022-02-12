@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:js';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:ezrecorder/Widgets/recorder.dart';
 import 'package:ezrecorder/Widgets/soundWave.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../provider/recorderProvider.dart';
 
@@ -18,6 +22,39 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  Connectivity connectivity = Connectivity();
+  late StreamSubscription<ConnectivityResult> subscription;
+  late String appNetworkStatus;
+
+  String getConnectionValue(var connectivityResult) {
+    String status = '';
+    switch (connectivityResult) {
+      case ConnectivityResult.mobile:
+        status = 'Mobile';
+        break;
+
+      case ConnectivityResult.wifi:
+        status = 'WiFi';
+        break;
+
+      case ConnectivityResult.none:
+        status = 'None';
+        break;
+
+      default:
+        status = 'None';
+        break;
+    }
+    return status;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    checkNetworkConnectivity();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,4 +104,26 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  void checkNetworkConnectivity() {
+    subscription =
+        connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
+      var conn = getConnectionValue(result);
+      setState(() {
+        appNetworkStatus = conn;
+        showToast(appNetworkStatus);
+      });
+    });
+  }
+}
+
+void showToast(appNetworkStatus) {
+  Fluttertoast.showToast(
+      msg: "Hi there $appNetworkStatus",
+      toastLength: Toast.LENGTH_LONG,
+      gravity: ToastGravity.BOTTOM,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.red,
+      textColor: Colors.white,
+      fontSize: 16.0);
 }
