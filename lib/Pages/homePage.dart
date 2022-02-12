@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:ezrecorder/Widgets/recorder.dart';
 import 'package:ezrecorder/Widgets/soundWave.dart';
@@ -13,7 +12,6 @@ Widget smGutter() {
     height: 30,
   );
 }
-
 class HomePage extends StatefulWidget {
   const HomePage();
 
@@ -30,16 +28,16 @@ class _HomePageState extends State<HomePage> {
     String status = '';
     switch (connectivityResult) {
       case ConnectivityResult.mobile:
-        status = 'Mobile';
+        status = 'Network Change Detected! \n Check Your Internet Connection';
         break;
 
-      case ConnectivityResult.wifi:
-        status = 'WiFi';
-        break;
-
-      case ConnectivityResult.none:
-        status = 'None';
-        break;
+      // case ConnectivityResult.wifi:
+      //   status = 'WiFi';
+      //   break;
+      //
+      // case ConnectivityResult.none:
+      //   status = 'None';
+      //   break;
 
       default:
         status = 'None';
@@ -105,6 +103,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //Check Network Connection
   void checkNetworkConnectivity() {
     subscription =
         connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
@@ -119,11 +118,11 @@ class _HomePageState extends State<HomePage> {
 
 void showToast(appNetworkStatus) {
   Fluttertoast.showToast(
-      msg: "Hi there $appNetworkStatus",
+      msg: "$appNetworkStatus",
       toastLength: Toast.LENGTH_LONG,
-      gravity: ToastGravity.BOTTOM,
+      gravity: ToastGravity.TOP_RIGHT,
       timeInSecForIosWeb: 1,
-      backgroundColor: Colors.red,
+      backgroundColor: Colors.green,
       textColor: Colors.white,
       fontSize: 16.0);
 }
