@@ -1,10 +1,11 @@
-import 'dart:html';
-import 'dart:io';
+import 'dart:convert';
+import 'package:universal_html/html.dart';
 import 'package:ezrecorder/provider/recorderProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:microphone/microphone.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class AudioRecorder extends StatefulWidget {
   const AudioRecorder({Key? key}) : super(key: key);
@@ -21,10 +22,8 @@ class _AudioRecorderState extends State<AudioRecorder> {
   @override
   void initState() {
     super.initState();
-    _recorder = MicrophoneRecorder()
-      ..init();
+    _recorder = MicrophoneRecorder()..init();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -33,69 +32,61 @@ class _AudioRecorderState extends State<AudioRecorder> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
           ///Start Button
-          Provider
-              .of<RecordProvider>(context, listen: true)
-              .startButtonStatus
+          Provider.of<RecordProvider>(context, listen: true).startButtonStatus
               ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                minimumSize: const Size(175, 50),
-                primary: Colors.teal,
-                onPrimary: Colors.white),
-            onPressed: () {
-              Provider.of<RecordProvider>(context, listen: false)
-                  .onStartRecord();
-              _recorder?.start();
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(175, 50),
+                      primary: Colors.teal,
+                      onPrimary: Colors.white),
+                  onPressed: () {
+                    Provider.of<RecordProvider>(context, listen: false)
+                        .onStartRecord();
+                    _recorder?.start();
 
-              //Call Timer
-              Provider
-                  .of<RecordProvider>(context, listen: false)
-                  .waveStatus = true;
+                    //Call Timer
+                    Provider.of<RecordProvider>(context, listen: false)
+                        .waveStatus = true;
 
-              print('Recording is started');
-            },
-            icon: const Icon(Icons.mic),
-            label: const Text('Start Recording'),
-          )
+                    print('Recording is started');
+                  },
+                  icon: const Icon(Icons.mic),
+                  label: const Text('Start Recording'),
+                )
               :
 
-          ///Pause Button
-          Provider
-              .of<RecordProvider>(context)
-              .pauseButtonStatus
-              ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                minimumSize: const Size(175, 50),
-                primary: Colors.amber,
-                onPrimary: Colors.white),
-            onPressed: () {
-              Provider.of<RecordProvider>(context, listen: false)
-                  .onPauseRecord();
+              ///Pause Button
+              Provider.of<RecordProvider>(context).pauseButtonStatus
+                  ? ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(175, 50),
+                          primary: Colors.amber,
+                          onPrimary: Colors.white),
+                      onPressed: () {
+                        Provider.of<RecordProvider>(context, listen: false)
+                            .onPauseRecord();
 
-              print('Recording is paused');
-            },
-            icon: const Icon(Icons.pause),
-            label: const Text('Pause Recording'),
-          )
-              : Container(),
+                        print('Recording is paused');
+                      },
+                      icon: const Icon(Icons.pause),
+                      label: const Text('Pause Recording'),
+                    )
+                  : Container(),
 
           ///Resume Button
-          Provider
-              .of<RecordProvider>(context)
-              .resumeButtonStatus
+          Provider.of<RecordProvider>(context).resumeButtonStatus
               ? ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                minimumSize: const Size(175, 50),
-                primary: Colors.teal,
-                onPrimary: Colors.white),
-            onPressed: () {
-              Provider.of<RecordProvider>(context, listen: false)
-                  .onResumeRecord();
-            },
-            icon: const Icon(Icons.skip_next),
-            label: const Text('Resume Recording'),
-          )
+                  style: ElevatedButton.styleFrom(
+                      minimumSize: const Size(175, 50),
+                      primary: Colors.teal,
+                      onPrimary: Colors.white),
+                  onPressed: () {
+                    Provider.of<RecordProvider>(context, listen: false)
+                        .onResumeRecord();
+                  },
+                  icon: const Icon(Icons.skip_next),
+                  label: const Text('Resume Recording'),
+                )
               : Container(),
 
           const SizedBox(
@@ -103,9 +94,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
           ),
 
           ///Stop Button
-          if (Provider
-              .of<RecordProvider>(context)
-              .stopButtonStatus)
+          if (Provider.of<RecordProvider>(context).stopButtonStatus)
             ElevatedButton.icon(
               style: ElevatedButton.styleFrom(
                   minimumSize: const Size(175, 50),
@@ -115,22 +104,19 @@ class _AudioRecorderState extends State<AudioRecorder> {
                 Provider.of<RecordProvider>(context, listen: false)
                     .onStopRecord();
                 _recorder?.stop();
-                Provider
-                    .of<RecordProvider>(context, listen: false)
-                    .waveStatus =
-                false;
+                Provider.of<RecordProvider>(context, listen: false).waveStatus =
+                    false;
 
                 print('Recording is stopped');
 
                 showDialog(
                     context: context,
-                    builder: (_) =>
-                        AlertDialog(
+                    builder: (_) => AlertDialog(
                           elevation: 24.0,
                           // backgroundColor: Colors.teal.withOpacity(0.8),
                           backgroundColor: Colors.teal,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30)),
+                              borderRadius: BorderRadius.circular(20)),
 
                           title: const Text(
                             'Your Audio here | Click to play',
@@ -145,16 +131,15 @@ class _AudioRecorderState extends State<AudioRecorder> {
                             width: 500,
                             decoration: const BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(10)),
+                                  BorderRadius.all(Radius.circular(10)),
                             ),
                             child: ListView(
                               children: [
                                 Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceEvenly,
+                                      MainAxisAlignment.spaceEvenly,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-
                                     ///Audio Pause Button
                                     ElevatedButton.icon(
                                       style: ElevatedButton.styleFrom(
@@ -199,7 +184,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                                         // _audioPlayer?.setUrl != null?(_recorder?.value.recording?.url):"";
                                         _audioPlayer!
                                             .setUrl(
-                                            _recorder!.value.recording!.url)
+                                                _recorder!.value.recording!.url)
                                             .then((_) {
                                           return _audioPlayer?.play();
                                         });
@@ -245,17 +230,14 @@ class _AudioRecorderState extends State<AudioRecorder> {
                                         onPrimary: Colors.white),
                                     onPressed: () async {
                                       ///File Saving to Drive
-
                                       final bytes = await _recorder?.toBytes();
-                                      var audioLength = bytes?.length;
+                                      var audioLength =
+                                          bytes?.length.toString();
                                       print(audioLength);
 
-                                      // final File fileToUpload =
-                                      //     bytes as File;
-                                      // print(fileToUpload);
-                                      // final fileToUpload =
-                                      // _recorder!.value.recording;
-                                      // print(fileToUpload);
+                                      var fileType = '.mp3';
+                                      uploadFileToDrive(
+                                          bytes, fileType, audioLength);
                                     },
                                     icon: const Icon(Icons.backup),
                                     label: const Text('Save to Drive')),
@@ -294,8 +276,7 @@ class _AudioRecorderState extends State<AudioRecorder> {
                               onPressed: () {
                                 _audioPlayer?.stop;
                                 _recorder?.dispose();
-                                _recorder = MicrophoneRecorder()
-                                  ..init();
+                                _recorder = MicrophoneRecorder()..init();
                                 Navigator.pop(context, 'OK');
                               },
                               child: const Text(
@@ -317,6 +298,19 @@ class _AudioRecorderState extends State<AudioRecorder> {
       ),
     );
   }
+}
 
-
+Future<void> uploadFileToDrive(file, fileType, fileLength) async {
+  print('eeee');
+  var apiURL =
+      'https://www.googleapis.com/upload/drive/v3/files?uploadType=media';
+  http.Response response = await http.post(Uri.parse(apiURL),
+      headers: {
+        "Content-Type": fileType,
+        "Content-Length": fileLength,
+      },
+      body: file);
+  var data = jsonDecode(response.body);
+  print("qqqqqqqqq $data");
+  // resMessage = (data['message']);
 }

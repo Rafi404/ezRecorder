@@ -404,12 +404,6 @@
       "languageVersion": "2.12"
     },
     {
-      "name": "pausable_timer",
-      "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pausable_timer-1.0.0+3",
-      "packageUri": "lib/",
-      "languageVersion": "2.12"
-    },
-    {
       "name": "pedantic",
       "rootUri": "file:///C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1",
       "packageUri": "lib/",
@@ -608,7 +602,7 @@
       "languageVersion": "2.17"
     }
   ],
-  "generated": "2022-02-12T12:05:47.603589Z",
+  "generated": "2022-02-13T09:24:05.054495Z",
   "generator": "pub",
   "generatorVersion": "2.17.0-85.0.dev"
 }

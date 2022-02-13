@@ -45,12 +45,12 @@ dependencies:
   url_launcher: ^6.0.18
   file_picker: ^4.3.3
   tus_client: ^1.0.2
-  pausable_timer: ^1.0.0+3
   audio_wave: ^0.1.2
   gcloud: ^0.8.5
   google_sign_in: ^5.2.3
   connectivity_plus: ^2.2.0
   fluttertoast: ^8.0.8
+
 
 
 dev_dependencies:

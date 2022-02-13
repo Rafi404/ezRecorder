@@ -471,13 +471,6 @@
             </list>
           </value>
         </entry>
-        <entry key="pausable_timer">
-          <value>
-            <list>
-              <option value="C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pausable_timer-1.0.0+3/lib" />
-            </list>
-          </value>
-        </entry>
         <entry key="pedantic">
           <value>
             <list>
@@ -769,7 +762,6 @@
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.5/lib" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-2.0.3/lib" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.0.5/lib" />
-      <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pausable_timer-1.0.0+3/lib" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1/lib" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/petitparser-4.4.0/lib" />
       <root url="file://C:/src/flutter/.pub-cache/hosted/pub.dartlang.org/platform-3.1.0/lib" />

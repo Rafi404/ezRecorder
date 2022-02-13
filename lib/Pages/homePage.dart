@@ -12,6 +12,7 @@ Widget smGutter() {
     height: 30,
   );
 }
+
 class HomePage extends StatefulWidget {
   const HomePage();
 
@@ -59,20 +60,21 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.teal,
         title: const Text('ezRecorder'),
+        centerTitle: true,
         elevation: 2.0,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(top: 15, bottom: 10, right: 30),
-            child: Row(
-              children: const [
-                Icon(Icons.mic),
-                Text(
-                  'My Records',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
-                ),
-              ],
-            ),
-          )
+        actions: const [
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 15, bottom: 10, right: 30),
+          //   child: Row(
+          //     children: const [
+          //       Icon(Icons.mic),
+          //       Text(
+          //         'My Records',
+          //         style: TextStyle(fontSize: 18, color: Colors.white),
+          //       ),
+          //     ],
+          //   ),
+          // )
         ],
       ),
       body: Center(
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage> {
           child: ListView(
             children: [
               const Text(
-                "ezRecord. A Simple Audio Recorder",
+                "A Simple Audio Recorder",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: 45,
